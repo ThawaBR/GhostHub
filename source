@@ -1,0 +1,173 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local localPlayer = Players.LocalPlayer
+
+local espEnabled = true
+local followPlayer = nil
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ESP_GUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 100, 0, 30)
+toggleButton.Position = UDim2.new(1, -110, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(40,40,40)
+toggleButton.TextColor3 = Color3.new(1,1,1)
+toggleButton.Text = "Show: ON"
+toggleButton.Parent = screenGui
+
+local followButton = Instance.new("TextButton")
+followButton.Size = UDim2.new(0, 100, 0, 30)
+followButton.Position = UDim2.new(1, -110, 0, 50)
+followButton.BackgroundColor3 = Color3.fromRGB(40,40,40)
+followButton.TextColor3 = Color3.new(1,1,1)
+followButton.Text = "Follow"
+followButton.Parent = screenGui
+
+local nameBox = Instance.new("TextBox")
+nameBox.Size = UDim2.new(0, 100, 0, 30)
+nameBox.Position = UDim2.new(1, -110, 0, 90)
+nameBox.BackgroundColor3 = Color3.fromRGB(60,60,60)
+nameBox.TextColor3 = Color3.new(1,1,1)
+nameBox.Text = ""
+nameBox.ClearTextOnFocus = false
+nameBox.PlaceholderText = "Player Name"
+nameBox.Visible = false
+nameBox.Parent = screenGui
+
+local stopFollowButton = Instance.new("TextButton")
+stopFollowButton.Size = UDim2.new(0, 100, 0, 30)
+stopFollowButton.Position = UDim2.new(1, -110, 0, 130)
+stopFollowButton.BackgroundColor3 = Color3.fromRGB(40,40,40)
+stopFollowButton.TextColor3 = Color3.new(1,1,1)
+stopFollowButton.Text = "Stop Follow"
+stopFollowButton.Parent = screenGui
+
+local warningLabel = Instance.new("TextLabel")
+warningLabel.Size = UDim2.new(0, 200, 0, 30)
+warningLabel.Position = UDim2.new(1, -220, 0, 170)
+warningLabel.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+warningLabel.TextColor3 = Color3.new(1,1,1)
+warningLabel.TextStrokeTransparency = 0
+warningLabel.TextSize = 14
+warningLabel.TextWrapped = true
+warningLabel.Visible = false
+warningLabel.Parent = screenGui
+
+local function createNameESP(character, player)
+	if character:FindFirstChild("Head") and not character.Head:FindFirstChild("NameESP") then
+		local billboard = Instance.new("BillboardGui")
+		billboard.Name = "NameESP"
+		billboard.Adornee = character.Head
+		billboard.Size = UDim2.new(0,200,0,50)
+		billboard.StudsOffset = Vector3.new(0,2,0)
+		billboard.AlwaysOnTop = true
+		billboard.Enabled = espEnabled
+		billboard.Parent = character.Head
+
+		local nameLabel = Instance.new("TextLabel")
+		nameLabel.Size = UDim2.new(1,0,1,0)
+		nameLabel.BackgroundTransparency = 1
+		nameLabel.Text = player.Name
+		nameLabel.TextColor3 = Color3.fromRGB(255,0,0)
+		nameLabel.TextStrokeTransparency = 0
+		nameLabel.TextSize = 14
+		nameLabel.Parent = billboard
+	end
+end
+
+local function toggleESP()
+	espEnabled = not espEnabled
+	toggleButton.Text = "Show: " .. (espEnabled and "ON" or "OFF")
+	for _, player in pairs(Players:GetPlayers()) do
+		if player.Character and player.Character:FindFirstChild("Head") then
+			local esp = player.Character.Head:FindFirstChild("NameESP")
+			if esp then
+				esp.Enabled = espEnabled or (followPlayer == player)
+			end
+		end
+	end
+end
+toggleButton.MouseButton1Click:Connect(toggleESP)
+
+followButton.MouseButton1Click:Connect(function()
+	nameBox.Visible = not nameBox.Visible
+end)
+
+nameBox.FocusLost:Connect(function(enterPressed)
+	if enterPressed then
+		local text = nameBox.Text:lower()
+		local matches = {}
+		for _, player in pairs(Players:GetPlayers()) do
+			local nameLower = player.Name:lower()
+			local displayLower = player.DisplayName:lower()
+			if nameLower:sub(1,#text) == text or displayLower:sub(1,#text) == text then
+				table.insert(matches, player)
+			end
+		end
+
+		if #matches == 1 then
+			followPlayer = matches[1]
+			print("Following: "..followPlayer.Name.." ("..followPlayer.DisplayName..")")
+			nameBox.Visible = false
+			nameBox.Text = ""
+		elseif #matches > 1 then
+			warningLabel.Text = "Multiple players found:\n"
+			for _, p in pairs(matches) do
+				warningLabel.Text = warningLabel.Text..p.Name.." ("..p.DisplayName..")\n"
+			end
+			warningLabel.Visible = true
+			delay(2, function() warningLabel.Visible = false end)
+		else
+			warningLabel.Text = "No player found."
+			warningLabel.Visible = true
+			delay(2, function() warningLabel.Visible = false end)
+		end
+	end
+end)
+
+stopFollowButton.MouseButton1Click:Connect(function()
+	if followPlayer then
+		local esp = followPlayer.Character and followPlayer.Character:FindFirstChild("Head") and followPlayer.Character.Head:FindFirstChild("NameESP")
+		if esp then
+			esp.Enabled = espEnabled
+		end
+		print("Stopped following "..followPlayer.Name)
+		followPlayer = nil
+	end
+end)
+
+local function onCharacterAdded(character, player)
+	character:WaitForChild("Head")
+	createNameESP(character, player)
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+	if player ~= localPlayer then
+		player.CharacterAdded:Connect(function(char)
+			onCharacterAdded(char, player)
+		end)
+		if player.Character then
+			onCharacterAdded(player.Character, player)
+		end
+	end
+end
+
+Players.PlayerAdded:Connect(function(player)
+	if player ~= localPlayer then
+		player.CharacterAdded:Connect(function(char)
+			onCharacterAdded(char, player)
+		end)
+	end
+end)
+
+RunService.RenderStepped:Connect(function()
+	if followPlayer and followPlayer.Character and followPlayer.Character:FindFirstChild("Head") then
+		local esp = followPlayer.Character.Head:FindFirstChild("NameESP")
+		if esp then
+			esp.Enabled = true
+		end
+	end
+end)
