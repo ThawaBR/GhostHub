@@ -92,7 +92,7 @@ tabFrame.Parent = mainFrame
 
 local tabs = {}
 local activeTab = nil
-local tabButtons = {"Tracker", "Possessor", "Exorcist"}
+local tabButtons = {"Tracker", "Emote", "Exorcist"}
 
 for i, name in ipairs(tabButtons) do
 	local tabBtn = Instance.new("TextButton")
@@ -180,6 +180,7 @@ local function createWarningLabel(parent)
 	return label
 end
 
+-- === TRACKER TAB ===
 local espFrame = tabs["Tracker"]
 local toggleButton = createButton(espFrame, "Show: ON", 10)
 local followButton = createButton(espFrame, "Follow Player", 50)
@@ -299,3 +300,31 @@ RunService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
+-- === EMOTE TAB ===
+local emoteFrame = tabs["Emote"]
+
+local function createEmoteButton(parent, text, positionY, animName)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(0.9, 0, 0, 28)
+	btn.Position = UDim2.new(0.05, 0, 0, positionY)
+	btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Text = text
+	btn.Font = Enum.Font.SourceSansBold
+	btn.TextSize = 14
+	btn.Parent = parent
+
+	btn.MouseButton1Click:Connect(function()
+		local Event = game:GetService("ReplicatedStorage").Remotes.LobbyRemote
+		pcall(function()
+			Event:FireServer("Anim", true, animName)
+		end)
+	end)
+
+	return btn
+end
+
+createEmoteButton(emoteFrame, "Panessa", 10, "Panessa")
+createEmoteButton(emoteFrame, "Stars", 50, "Stars")
+createEmoteButton(emoteFrame, "Fanclub", 90, "Fanclub")
