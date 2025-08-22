@@ -92,7 +92,7 @@ tabFrame.Parent = mainFrame
 
 local tabs = {}
 local activeTab = nil
-local tabButtons = {"ESP", "Tracker", "Utilities"}
+local tabButtons = {"Tracker", "Possessor", "Exorcist"}
 
 for i, name in ipairs(tabButtons) do
 	local tabBtn = Instance.new("TextButton")
@@ -123,8 +123,8 @@ for i, name in ipairs(tabButtons) do
 	end)
 end
 
-tabs["ESP"].Visible = true
-activeTab = "ESP"
+tabs["Tracker"].Visible = true
+activeTab = "Tracker"
 
 local function createButton(parent, text, positionY)
 	local btn = Instance.new("TextButton")
@@ -180,7 +180,7 @@ local function createWarningLabel(parent)
 	return label
 end
 
-local espFrame = tabs["ESP"]
+local espFrame = tabs["Tracker"]
 local toggleButton = createButton(espFrame, "Show: ON", 10)
 local followButton = createButton(espFrame, "Follow Player", 50)
 local stopFollowButton = createButton(espFrame, "Stop Follow", 120)
