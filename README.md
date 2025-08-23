@@ -10,7 +10,7 @@ Track possessed players and access upcoming features in one hub.
 - Open for Future Additions – Easy to expand with new tabs or functionality.
 
 ## Status
-- **Version:** 0.2.0
+- **Version:** 0.3.0
 - Open Source
 - Major update
 
