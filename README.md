@@ -3,13 +3,12 @@
 Track possessed players and access upcoming features in one hub.
 
 ## Features
-- Tracker: shows who has been possessed and allows following players
-- Emote: execute animations Panessa, Stars, and Fanclub
-- Exorcist: upcoming features (GUI ready)
-- Movable and minimizable GUI
-- Reorganized buttons and improved warning system
-- Lightweight and efficient
-- Open for future additions
+- Tracker – Displays which players have been possessed and allows following specific players.
+- Emote – Execute animations: Panessa, Stars, Fanclub.
+- Movable & Minimizible GUI – Drag hub only via the title and minimize/maximize button available.
+- Reorganized Buttons & Improved Warning System – Cleaner layout, warning labels show only when needed.
+- Lightweight & Efficient – Optimized for performance.
+- Open for Future Additions – Easy to expand with new tabs or functionality.
 
 ## Status
 - **Version:** 0.3.0
