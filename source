@@ -332,9 +332,9 @@ createEmoteButton(emoteFrame, "Fanclub", 90, "Fanclub")
 -- >> Ghost Hub Credits
 pcall(function()
 	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = "🌟 Ghost Hub Loaded!";
-		Text = "Made by thawabr on YouTube";
-		Duration = 10, -- time in seconds
-		Button1 = "OK"
+		Title = "✅ Ghost Hub Activated",
+		Text = "Made by thawabr • YouTube",
+		Duration = 8,
+		Button1 = "Close"
 	})
 end)
