@@ -328,3 +328,13 @@ end
 createEmoteButton(emoteFrame, "Panessa", 10, "Panessa")
 createEmoteButton(emoteFrame, "Stars", 50, "Stars")
 createEmoteButton(emoteFrame, "Fanclub", 90, "Fanclub")
+
+-- >> Ghost Hub Credits
+pcall(function()
+	game:GetService("StarterGui"):SetCore("SendNotification", {
+		Title = "🌟 Ghost Hub Loaded!";
+		Text = "Made by thawabr on YouTube";
+		Duration = 10, -- time in seconds
+		Button1 = "OK"
+	})
+end)
