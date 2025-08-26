@@ -1,340 +1,518 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
 local localPlayer = Players.LocalPlayer
+if not localPlayer then
+    localPlayer = Players.PlayerAdded:Wait()
+end
+
+local playerGui = localPlayer:WaitForChild("PlayerGui")
 local Camera = workspace.CurrentCamera
 
 local espEnabled = true
 local followPlayer = nil
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "GhostHubGUI"
-screenGui.ResetOnSpawn = false
-screenGui.Parent = localPlayer:WaitForChild("PlayerGui")
+local function createGUI()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "GhostHubGUI"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = playerGui
 
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 220, 0, 260)
-mainFrame.Position = UDim2.new(0.5, -110, 0.5, -130)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = screenGui
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 220, 0, 260)
+    mainFrame.Position = UDim2.new(0.5, -110, 0.5, -130)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Parent = screenGui
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 35)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-title.Text = "Ghost Hub"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Font = Enum.Font.SourceSansBold
-title.TextSize = 20
-title.Parent = mainFrame
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 35)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    title.Text = "Ghost Hub"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.SourceSansBold
+    title.TextSize = 20
+    title.Parent = mainFrame
 
-local minimizeButton = Instance.new("TextButton")
-minimizeButton.Size = UDim2.new(0, 30, 0, 30)
-minimizeButton.Position = UDim2.new(1, -35, 0, 2)
-minimizeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-minimizeButton.Text = "_"
-minimizeButton.Font = Enum.Font.SourceSansBold
-minimizeButton.TextSize = 24
-minimizeButton.Parent = mainFrame
+    local minimizeButton = Instance.new("TextButton")
+    minimizeButton.Size = UDim2.new(0, 30, 0, 30)
+    minimizeButton.Position = UDim2.new(1, -35, 0, 2)
+    minimizeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    minimizeButton.Text = "_"
+    minimizeButton.Font = Enum.Font.SourceSansBold
+    minimizeButton.TextSize = 24
+    minimizeButton.Parent = mainFrame
 
-local minimized = false
-minimizeButton.MouseButton1Click:Connect(function()
-	minimized = not minimized
-	for _, child in pairs(mainFrame:GetChildren()) do
-		if child ~= title and child ~= minimizeButton and child ~= tabFrame then
-			child.Visible = not minimized
-		end
-	end
-	mainFrame.Size = minimized and UDim2.new(0, 220, 0, 35) or UDim2.new(0, 220, 0, 260)
-end)
+    local minimized = false
+    local tabFrame
 
-do
-	local dragging = false
-	local dragStart
-	local startPos
-	local currentInput
+    minimizeButton.MouseButton1Click:Connect(function()
+        minimized = not minimized
+        
+        if tabFrame then
+            tabFrame.Visible = not minimized
+        end
+        
+        mainFrame.Size = minimized and UDim2.new(0, 220, 0, 35) or UDim2.new(0, 220, 0, 260)
+        
+        local picker = screenGui:FindFirstChild("EmotePickerPopup")
+        if picker then
+            picker:Destroy()
+        end
+    end)
 
-	title.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			dragStart = input.Position
-			startPos = mainFrame.Position
-			currentInput = input
-			Camera.CameraType = Enum.CameraType.Scriptable
+    local dragging = false
+    local dragStart
+    local startPos
+    local currentInput
 
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-					Camera.CameraType = Enum.CameraType.Custom
-				end
-			end)
-		end
-	end)
+    title.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = mainFrame.Position
+            currentInput = input
+            Camera.CameraType = Enum.CameraType.Scriptable
 
-	UserInputService.InputChanged:Connect(function(input)
-		if input == currentInput and dragging then
-			local delta = input.Position - dragStart
-			mainFrame.Position = UDim2.new(
-				startPos.X.Scale, startPos.X.Offset + delta.X,
-				startPos.Y.Scale, startPos.Y.Offset + delta.Y
-			)
-		end
-	end)
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                    Camera.CameraType = Enum.CameraType.Custom
+                end
+            end)
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if input == currentInput and dragging then
+            local delta = input.Position - dragStart
+            mainFrame.Position = UDim2.new(
+                startPos.X.Scale, startPos.X.Offset + delta.X,
+                startPos.Y.Scale, startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+
+    tabFrame = Instance.new("Frame")
+    tabFrame.Size = UDim2.new(1, 0, 1, -35)
+    tabFrame.Position = UDim2.new(0, 0, 0, 35)
+    tabFrame.BackgroundTransparency = 1
+    tabFrame.Parent = mainFrame
+
+    local tabs = {}
+    local activeTab = nil
+    local tabButtons = {"Tracker", "Emote", "Empty"}
+
+    for i, name in ipairs(tabButtons) do
+        local tabBtn = Instance.new("TextButton")
+        tabBtn.Size = UDim2.new(1/3, -2, 0, 25)
+        tabBtn.Position = UDim2.new((i-1)/3, 1, 0, 0)
+        tabBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+        tabBtn.Text = name
+        tabBtn.TextColor3 = Color3.fromRGB(255,255,255)
+        tabBtn.Font = Enum.Font.SourceSansBold
+        tabBtn.TextSize = 14
+        tabBtn.Parent = tabFrame
+
+        local contentFrame = Instance.new("Frame")
+        contentFrame.Size = UDim2.new(1, -10, 1, -35)
+        contentFrame.Position = UDim2.new(0,5,0,30)
+        contentFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+        contentFrame.Visible = false
+        contentFrame.Parent = tabFrame
+
+        tabs[name] = contentFrame
+
+        tabBtn.MouseButton1Click:Connect(function()
+            for _, f in pairs(tabs) do
+                f.Visible = false
+            end
+            contentFrame.Visible = true
+            activeTab = name
+
+            local picker = screenGui:FindFirstChild("EmotePickerPopup")
+            if picker then
+                picker:Destroy()
+            end
+        end)
+    end
+
+    local function createButton(parent, text, positionY)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(0.9, 0, 0, 28)
+        btn.Position = UDim2.new(0.05, 0, 0, positionY)
+        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Text = text
+        btn.Font = Enum.Font.SourceSansBold
+        btn.TextSize = 14
+        btn.Parent = parent
+        return btn
+    end
+
+    local function createTextBox(parent, placeholder, positionY)
+        local box = Instance.new("TextBox")
+        box.Size = UDim2.new(0.9, 0, 0, 25)
+        box.Position = UDim2.new(0.05, 0, 0, positionY)
+        box.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+        box.TextColor3 = Color3.fromRGB(255, 255, 255)
+        box.Text = ""
+        box.PlaceholderText = placeholder
+        box.ClearTextOnFocus = false
+        box.Visible = false
+        box.Font = Enum.Font.SourceSans
+        box.TextSize = 14
+        box.Parent = parent
+        return box
+    end
+
+    local function createWarningLabel(parent)
+        local container = Instance.new("Frame")
+        container.Size = UDim2.new(1, -10, 0, 60)
+        container.Position = UDim2.new(0,5,1,-70)
+        container.BackgroundTransparency = 1
+        container.ClipsDescendants = true
+        container.Parent = parent
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1,0,1,0)
+        label.Position = UDim2.new(0,0,0,0)
+        label.BackgroundTransparency = 0
+        label.BackgroundColor3 = Color3.fromRGB(200,50,50)
+        label.TextColor3 = Color3.fromRGB(255,255,255)
+        label.TextStrokeTransparency = 0
+        label.TextSize = 12
+        label.TextWrapped = true
+        label.TextYAlignment = Enum.TextYAlignment.Top
+        label.Visible = false
+        label.Font = Enum.Font.SourceSansBold
+        label.Parent = container
+
+        return label
+    end
+
+    local espFrame = tabs["Tracker"]
+    local toggleButton = createButton(espFrame, "Show: ON", 10)
+    local followButton = createButton(espFrame, "Follow Player", 50)
+    local stopFollowButton = createButton(espFrame, "Stop Follow", 120)
+    local nameBox = createTextBox(espFrame, "Player Name", 85)
+    local warningLabel = createWarningLabel(espFrame)
+
+    local function createNameESP(character, player)
+        if character:FindFirstChild("Head") and not character.Head:FindFirstChild("NameESP") then
+            local billboard = Instance.new("BillboardGui")
+            billboard.Name = "NameESP"
+            billboard.Adornee = character.Head
+            billboard.Size = UDim2.new(0,150,0,30)
+            billboard.StudsOffset = Vector3.new(0,2,0)
+            billboard.AlwaysOnTop = true
+            billboard.Enabled = espEnabled
+            billboard.Parent = character.Head
+
+            local nameLabel = Instance.new("TextLabel")
+            nameLabel.Size = UDim2.new(1,0,1,0)
+            nameLabel.BackgroundTransparency = 1
+            nameLabel.Text = player.Name
+            nameLabel.TextColor3 = Color3.fromRGB(255,0,0)
+            nameLabel.TextStrokeTransparency = 0
+            nameLabel.TextSize = 14
+            nameLabel.Parent = billboard
+        end
+    end
+
+    toggleButton.MouseButton1Click:Connect(function()
+        espEnabled = not espEnabled
+        toggleButton.Text = "Show: " .. (espEnabled and "ON" or "OFF")
+        for _, player in pairs(Players:GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("Head") then
+                local esp = player.Character.Head:FindFirstChild("NameESP")
+                if esp then
+                    esp.Enabled = espEnabled or (followPlayer == player)
+                end
+            end
+        end
+    end)
+
+    followButton.MouseButton1Click:Connect(function()
+        nameBox.Visible = not nameBox.Visible
+    end)
+
+    nameBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local text = nameBox.Text:lower()
+            local matches = {}
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Name:lower():sub(1,#text) == text or player.DisplayName:lower():sub(1,#text) == text then
+                    table.insert(matches, player)
+                end
+            end
+
+            if #matches == 1 then
+                followPlayer = matches[1]
+                print("Following: "..followPlayer.Name)
+                nameBox.Visible = false
+                nameBox.Text = ""
+            elseif #matches > 1 then
+                warningLabel.Text = "Multiple players found:\n"
+                for _, p in pairs(matches) do
+                    warningLabel.Text = warningLabel.Text..p.Name.."\n"
+                end
+                warningLabel.Visible = true
+                delay(2, function() warningLabel.Visible = false end)
+            else
+                warningLabel.Text = "No player found."
+                warningLabel.Visible = true
+                delay(2, function() warningLabel.Visible = false end)
+            end
+        end
+    end)
+
+    stopFollowButton.MouseButton1Click:Connect(function()
+        if followPlayer then
+            local esp = followPlayer.Character and followPlayer.Character:FindFirstChild("Head") and followPlayer.Character.Head:FindFirstChild("NameESP")
+            if esp then
+                esp.Enabled = espEnabled
+            end
+            print("Stopped following "..followPlayer.Name)
+            followPlayer = nil
+        end
+    end)
+
+    local function onCharacterAdded(character, player)
+        if character:FindFirstChild("Head") then
+            createNameESP(character, player)
+        else
+            character:WaitForChild("Head")
+            createNameESP(character, player)
+        end
+    end
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer then
+            player.CharacterAdded:Connect(function(char)
+                onCharacterAdded(char, player)
+            end)
+            if player.Character then
+                onCharacterAdded(player.Character, player)
+            end
+        end
+    end
+
+    Players.PlayerAdded:Connect(function(player)
+        if player ~= localPlayer then
+            player.CharacterAdded:Connect(function(char)
+                onCharacterAdded(char, player)
+            end)
+        end
+    end)
+
+    RunService.RenderStepped:Connect(function()
+        if followPlayer and followPlayer.Character and followPlayer.Character:FindFirstChild("Head") then
+            local esp = followPlayer.Character.Head:FindFirstChild("NameESP")
+            if esp then
+                esp.Enabled = true
+            end
+        end
+    end)
+
+    local emoteFrame = tabs["Emote"]
+
+    local SyncData = localPlayer:FindFirstChild("SyncData") or Instance.new("RemoteEvent")
+    SyncData.Name = "SyncData"
+    SyncData.Parent = localPlayer
+
+    local allEmotes = {
+        "Clapping", "Laugh", "CatDance", "Boogie", "Pushup", "Sit", "Cry", "L",
+        "Backflip", "Griddy", "BoogieDown", "BreakYou", "Orange", "Chill", "Distraction", "BringItAround",
+        "Hakari", "Frolick", "Stars", "Marashin", "Levitate2", "Happy", "Breakdown", "Shhh",
+        "Aegis", "Hardstyle", "PizzaRave", "WhatAbout", "BeatReactor", "FaceStomping2", "NothingChanges", "Icon",
+        "Winning", "BoomboxJazz", "KGJ", "Breakdance", "Panessa", "Mikubeam", "AmpUp", "Afro", "Thriller"
+    }
+    local selectedEmotes = {"", "", "", "", "", "", "", ""}
+
+    local emoteTitle = Instance.new("TextLabel")
+    emoteTitle.Size = UDim2.new(1, 0, 0, 28)
+    emoteTitle.Position = UDim2.new(0, 0, 0, 0)
+    emoteTitle.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    emoteTitle.Text = "EMOTE SELECTOR"
+    emoteTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    emoteTitle.Font = Enum.Font.GothamBold
+    emoteTitle.TextSize = 16
+    emoteTitle.Parent = emoteFrame
+
+    local slotsScrollingFrame = Instance.new("ScrollingFrame")
+    slotsScrollingFrame.Size = UDim2.new(1, -6, 0, 175)
+    slotsScrollingFrame.Position = UDim2.new(0, 3, 0, 32)
+    slotsScrollingFrame.BackgroundTransparency = 1
+    slotsScrollingFrame.BorderSizePixel = 0
+    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 8 * 23)
+    slotsScrollingFrame.ScrollBarThickness = 7
+    slotsScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 120)
+    slotsScrollingFrame.Parent = emoteFrame
+
+    local slotLayout = Instance.new("UIListLayout")
+    slotLayout.Padding = UDim.new(0, 2)
+    slotLayout.Parent = slotsScrollingFrame
+
+    local currentPicker = nil
+
+    local slotButtons = {}
+
+    for i = 1, 8 do
+        local slotIdx = i
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(0.97, 0, 0, 20)
+        btn.Position = UDim2.new(0.015, 0, 0, (i-1)*23)
+        btn.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 13
+        btn.Text = "Slot "..i.." - None"
+        btn.AutoButtonColor = true
+        btn.Parent = slotsScrollingFrame
+        btn.ClipsDescendants = true
+
+        btn.MouseEnter:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.17), {BackgroundColor3 = Color3.fromRGB(70, 70, 80)}):Play()
+        end)
+        btn.MouseLeave:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.17), {BackgroundColor3 = Color3.fromRGB(60, 60, 70)}):Play()
+        end)
+        btn.MouseButton1Click:Connect(function()
+            if currentPicker then
+                currentPicker:Destroy()
+                currentPicker = nil
+            end
+
+            local picker = Instance.new("Frame")
+            picker.Name = "EmotePickerPopup"
+            picker.Size = UDim2.new(0, 220, 0, 250)
+            picker.Position = UDim2.new(0.5, -110, 0.5, -125)
+            picker.BackgroundColor3 = Color3.fromRGB(40, 40, 60)
+            picker.BorderSizePixel = 0
+            picker.ZIndex = 100
+            picker.Parent = screenGui
+            currentPicker = picker
+
+            local pickerTitle = Instance.new("TextLabel")
+            pickerTitle.Size = UDim2.new(1, 0, 0, 30)
+            pickerTitle.Position = UDim2.new(0, 0, 0, 0)
+            pickerTitle.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+            pickerTitle.Text = "Select an Emote"
+            pickerTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+            pickerTitle.Font = Enum.Font.GothamBold
+            pickerTitle.TextSize = 15
+            pickerTitle.ZIndex = 101
+            pickerTitle.Parent = picker
+
+            local closeBtn = Instance.new("TextButton")
+            closeBtn.Size = UDim2.new(0, 30, 0, 30)
+            closeBtn.Position = UDim2.new(1, -32, 0, 0)
+            closeBtn.Text = "X"
+            closeBtn.BackgroundColor3 = Color3.fromRGB(160, 70, 70)
+            closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            closeBtn.Font = Enum.Font.GothamBold
+            closeBtn.TextSize = 15
+            closeBtn.ZIndex = 102
+            closeBtn.Parent = picker
+            closeBtn.MouseButton1Click:Connect(function()
+                picker:Destroy()
+                currentPicker = nil
+            end)
+
+            local scroll = Instance.new("ScrollingFrame")
+            scroll.Size = UDim2.new(1, -10, 1, -38)
+            scroll.Position = UDim2.new(0, 5, 0, 33)
+            scroll.CanvasSize = UDim2.new(0, 0, 0, #allEmotes * 26)
+            scroll.ScrollBarThickness = 7
+            scroll.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 120)
+            scroll.BackgroundTransparency = 1
+            scroll.ZIndex = 101
+            scroll.Parent = picker
+
+            local layout = Instance.new("UIListLayout")
+            layout.Padding = UDim.new(0, 3)
+            layout.Parent = scroll
+
+            for _, emote in ipairs(allEmotes) do
+                local emoteBtn = Instance.new("TextButton")
+                emoteBtn.Size = UDim2.new(1, 0, 0, 23)
+                emoteBtn.BackgroundColor3 = Color3.fromRGB(80, 120, 200)
+                emoteBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                emoteBtn.Font = Enum.Font.Gotham
+                emoteBtn.TextSize = 14
+                emoteBtn.Text = emote
+                emoteBtn.Parent = scroll
+                emoteBtn.ZIndex = 102
+                emoteBtn.AutoButtonColor = true
+
+                emoteBtn.MouseEnter:Connect(function()
+                    TweenService:Create(emoteBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(100,140,220)}):Play()
+                end)
+                emoteBtn.MouseLeave:Connect(function()
+                    TweenService:Create(emoteBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(80,120,200)}):Play()
+                end)
+                emoteBtn.MouseButton1Click:Connect(function()
+                    selectedEmotes[slotIdx] = emote
+                    btn.Text = "Slot "..slotIdx.." - "..emote
+                    picker:Destroy()
+                    currentPicker = nil
+                    TweenService:Create(btn, TweenInfo.new(0.19), {BackgroundColor3 = Color3.fromRGB(90, 160, 90)}):Play()
+                    wait(0.18)
+                    TweenService:Create(btn, TweenInfo.new(0.19), {BackgroundColor3 = Color3.fromRGB(60, 60, 70)}):Play()
+                end)
+            end
+        end)
+        slotButtons[i] = btn
+    end
+
+    local confirmButton = Instance.new("TextButton")
+    confirmButton.Size = UDim2.new(0.96, 0, 0, 28)
+    confirmButton.Position = UDim2.new(0.02, 0, 0, 196)
+    confirmButton.BackgroundColor3 = Color3.fromRGB(80, 120, 200)
+    confirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    confirmButton.Font = Enum.Font.Gotham
+    confirmButton.TextSize = 15
+    confirmButton.Text = "CONFIRM EMOTES"
+    confirmButton.AutoButtonColor = true
+    confirmButton.Parent = emoteFrame
+
+    confirmButton.MouseEnter:Connect(function()
+        TweenService:Create(confirmButton, TweenInfo.new(0.17), {BackgroundColor3 = Color3.fromRGB(100, 140, 220)}):Play()
+    end)
+    confirmButton.MouseLeave:Connect(function()
+        TweenService:Create(confirmButton, TweenInfo.new(0.17), {BackgroundColor3 = Color3.fromRGB(80, 120, 200)}):Play()
+    end)
+
+    confirmButton.MouseButton1Click:Connect(function()
+        if SyncData and SyncData.OnClientEvent then
+            firesignal(SyncData.OnClientEvent, "EmoteOrder", selectedEmotes)
+        end
+        TweenService:Create(confirmButton, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(90, 180, 90)}):Play()
+        confirmButton.Text = "EMOTES SENT!"
+        wait(0.8)
+        confirmButton.Text = "CONFIRM EMOTES"
+        TweenService:Create(confirmButton, TweenInfo.new(0.25), {BackgroundColor3 = Color3.fromRGB(80, 120, 200)}):Play()
+        print("Emotes sent:", table.concat(selectedEmotes, ", "))
+    end)
+
+    tabs["Tracker"].Visible = true
+    activeTab = "Tracker"
+
+    pcall(function()
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "✅ Ghost Hub Activated",
+            Text = "Made by thawabr • YouTube",
+            Duration = 8,
+            Button1 = "Close"
+        })
+    end)
+
+    print("Ghost Hub loaded successfully!")
 end
 
-local tabFrame = Instance.new("Frame")
-tabFrame.Size = UDim2.new(1, 0, 1, -35)
-tabFrame.Position = UDim2.new(0, 0, 0, 35)
-tabFrame.BackgroundTransparency = 1
-tabFrame.Parent = mainFrame
-
-local tabs = {}
-local activeTab = nil
-local tabButtons = {"Tracker", "Emote", "Empty"}
-
-for i, name in ipairs(tabButtons) do
-	local tabBtn = Instance.new("TextButton")
-	tabBtn.Size = UDim2.new(1/3, -2, 0, 25)
-	tabBtn.Position = UDim2.new((i-1)/3, 1, 0, 0)
-	tabBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
-	tabBtn.Text = name
-	tabBtn.TextColor3 = Color3.fromRGB(255,255,255)
-	tabBtn.Font = Enum.Font.SourceSansBold
-	tabBtn.TextSize = 14
-	tabBtn.Parent = tabFrame
-
-	local contentFrame = Instance.new("Frame")
-	contentFrame.Size = UDim2.new(1, -10, 1, -35)
-	contentFrame.Position = UDim2.new(0,5,0,30)
-	contentFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
-	contentFrame.Visible = false
-	contentFrame.Parent = tabFrame
-
-	tabs[name] = contentFrame
-
-	tabBtn.MouseButton1Click:Connect(function()
-		for _, f in pairs(tabs) do
-			f.Visible = false
-		end
-		contentFrame.Visible = true
-		activeTab = name
-	end)
-end
-
-tabs["Tracker"].Visible = true
-activeTab = "Tracker"
-
-local function createButton(parent, text, positionY)
-	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(0.9, 0, 0, 28)
-	btn.Position = UDim2.new(0.05, 0, 0, positionY)
-	btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.Text = text
-	btn.Font = Enum.Font.SourceSansBold
-	btn.TextSize = 14
-	btn.Parent = parent
-	return btn
-end
-
-local function createTextBox(parent, placeholder, positionY)
-	local box = Instance.new("TextBox")
-	box.Size = UDim2.new(0.9, 0, 0, 25)
-	box.Position = UDim2.new(0.05, 0, 0, positionY)
-	box.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-	box.TextColor3 = Color3.fromRGB(255, 255, 255)
-	box.Text = ""
-	box.PlaceholderText = placeholder
-	box.ClearTextOnFocus = false
-	box.Visible = false
-	box.Font = Enum.Font.SourceSans
-	box.TextSize = 14
-	box.Parent = parent
-	return box
-end
-
-local function createWarningLabel(parent)
-	local container = Instance.new("Frame")
-	container.Size = UDim2.new(1, -10, 0, 60)
-	container.Position = UDim2.new(0,5,1,-70)
-	container.BackgroundTransparency = 1
-	container.ClipsDescendants = true
-	container.Parent = parent
-
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.new(1,0,1,0)
-	label.Position = UDim2.new(0,0,0,0)
-	label.BackgroundTransparency = 0
-	label.BackgroundColor3 = Color3.fromRGB(200,50,50)
-	label.TextColor3 = Color3.fromRGB(255,255,255)
-	label.TextStrokeTransparency = 0
-	label.TextSize = 12
-	label.TextWrapped = true
-	label.TextYAlignment = Enum.TextYAlignment.Top
-	label.Visible = false
-	label.Font = Enum.Font.SourceSansBold
-	label.Parent = container
-
-	return label
-end
-
--- === TRACKER TAB ===
-local espFrame = tabs["Tracker"]
-local toggleButton = createButton(espFrame, "Show: ON", 10)
-local followButton = createButton(espFrame, "Follow Player", 50)
-local stopFollowButton = createButton(espFrame, "Stop Follow", 120)
-local nameBox = createTextBox(espFrame, "Player Name", 85)
-local warningLabel = createWarningLabel(espFrame)
-
-local function createNameESP(character, player)
-	if character:FindFirstChild("Head") and not character.Head:FindFirstChild("NameESP") then
-		local billboard = Instance.new("BillboardGui")
-		billboard.Name = "NameESP"
-		billboard.Adornee = character.Head
-		billboard.Size = UDim2.new(0,150,0,30)
-		billboard.StudsOffset = Vector3.new(0,2,0)
-		billboard.AlwaysOnTop = true
-		billboard.Enabled = espEnabled
-		billboard.Parent = character.Head
-
-		local nameLabel = Instance.new("TextLabel")
-		nameLabel.Size = UDim2.new(1,0,1,0)
-		nameLabel.BackgroundTransparency = 1
-		nameLabel.Text = player.Name
-		nameLabel.TextColor3 = Color3.fromRGB(255,0,0)
-		nameLabel.TextStrokeTransparency = 0
-		nameLabel.TextSize = 14
-		nameLabel.Parent = billboard
-	end
-end
-
-toggleButton.MouseButton1Click:Connect(function()
-	espEnabled = not espEnabled
-	toggleButton.Text = "Show: " .. (espEnabled and "ON" or "OFF")
-	for _, player in pairs(Players:GetPlayers()) do
-		if player.Character and player.Character:FindFirstChild("Head") then
-			local esp = player.Character.Head:FindFirstChild("NameESP")
-			if esp then
-				esp.Enabled = espEnabled or (followPlayer == player)
-			end
-		end
-	end
-end)
-
-followButton.MouseButton1Click:Connect(function()
-	nameBox.Visible = not nameBox.Visible
-end)
-
-nameBox.FocusLost:Connect(function(enterPressed)
-	if enterPressed then
-		local text = nameBox.Text:lower()
-		local matches = {}
-		for _, player in pairs(Players:GetPlayers()) do
-			if player.Name:lower():sub(1,#text) == text or player.DisplayName:lower():sub(1,#text) == text then
-				table.insert(matches, player)
-			end
-		end
-
-		if #matches == 1 then
-			followPlayer = matches[1]
-			print("Following: "..followPlayer.Name)
-			nameBox.Visible = false
-			nameBox.Text = ""
-		elseif #matches > 1 then
-			warningLabel.Text = "Multiple players found:\n"
-			for _, p in pairs(matches) do
-				warningLabel.Text = warningLabel.Text..p.Name.."\n"
-			end
-			warningLabel.Visible = true
-			delay(2, function() warningLabel.Visible = false end)
-		else
-			warningLabel.Text = "No player found."
-			warningLabel.Visible = true
-			delay(2, function() warningLabel.Visible = false end)
-		end
-	end
-end)
-
-stopFollowButton.MouseButton1Click:Connect(function()
-	if followPlayer then
-		local esp = followPlayer.Character and followPlayer.Character:FindFirstChild("Head") and followPlayer.Character.Head:FindFirstChild("NameESP")
-		if esp then
-			esp.Enabled = espEnabled
-		end
-		print("Stopped following "..followPlayer.Name)
-		followPlayer = nil
-	end
-end)
-
-local function onCharacterAdded(character, player)
-	character:WaitForChild("Head")
-	createNameESP(character, player)
-end
-
-for _, player in pairs(Players:GetPlayers()) do
-	if player ~= localPlayer then
-		player.CharacterAdded:Connect(function(char)
-			onCharacterAdded(char, player)
-		end)
-		if player.Character then
-			onCharacterAdded(player.Character, player)
-		end
-	end
-end
-
-Players.PlayerAdded:Connect(function(player)
-	if player ~= localPlayer then
-		player.CharacterAdded:Connect(function(char)
-			onCharacterAdded(char, player)
-		end)
-	end
-end)
-
-RunService.RenderStepped:Connect(function()
-	if followPlayer and followPlayer.Character and followPlayer.Character:FindFirstChild("Head") then
-		local esp = followPlayer.Character.Head:FindFirstChild("NameESP")
-		if esp then
-			esp.Enabled = true
-		end
-	end
-end)
-
--- === EMOTE TAB ===
-local emoteFrame = tabs["Emote"]
-
-local function createEmoteButton(parent, text, positionY, animName)
-	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(0.9, 0, 0, 28)
-	btn.Position = UDim2.new(0.05, 0, 0, positionY)
-	btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.Text = text
-	btn.Font = Enum.Font.SourceSansBold
-	btn.TextSize = 14
-	btn.Parent = parent
-
-	btn.MouseButton1Click:Connect(function()
-		local Event = game:GetService("ReplicatedStorage").Remotes.LobbyRemote
-		pcall(function()
-			Event:FireServer("Anim", true, animName)
-		end)
-	end)
-
-	return btn
-end
-
-createEmoteButton(emoteFrame, "Panessa", 10, "Panessa")
-createEmoteButton(emoteFrame, "Stars", 50, "Stars")
-createEmoteButton(emoteFrame, "Fanclub", 90, "Fanclub")
-
--- >> Ghost Hub Credits
-pcall(function()
-	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = "✅ Ghost Hub Activated",
-		Text = "Made by thawabr • YouTube",
-		Duration = 8,
-		Button1 = "Close"
-	})
-end)
+createGUI()
