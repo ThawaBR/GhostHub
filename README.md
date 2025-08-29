@@ -20,3 +20,5 @@ Track possessed players and access upcoming features in one hub.
 Want to contribute? Open a pull request and if it checks out, we will merge it!
 
 Any usage of this script requires giving proper credits to the creator.
+
+⚠️ Use this script at your own risk.
