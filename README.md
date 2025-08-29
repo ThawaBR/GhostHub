@@ -4,7 +4,7 @@ Track possessed players and access upcoming features in one hub.
 
 ## Features
 - Tracker: Shows possessed players and allows following.
-- Emotes: 40+ animations available: Panessa, Stars, Fanclub, and many more.
+- Emotes: 46+ animations available: Panessa, Stars, Fanclub, and many more.
 - Utilities: Includes a speed boost toggle for faster movement.
 - Movable & Minimizable GUI
 - Optimized & Lightweight
