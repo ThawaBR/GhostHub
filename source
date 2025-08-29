@@ -14,6 +14,9 @@ local Camera = workspace.CurrentCamera
 local espEnabled = true
 local followPlayer = nil
 
+local walkspeedBoosted = false
+local oldWalkSpeed = 16
+
 local function createGUI()
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "GhostHubGUI"
@@ -52,13 +55,10 @@ local function createGUI()
 
     minimizeButton.MouseButton1Click:Connect(function()
         minimized = not minimized
-        
         if tabFrame then
             tabFrame.Visible = not minimized
         end
-        
         mainFrame.Size = minimized and UDim2.new(0, 220, 0, 35) or UDim2.new(0, 220, 0, 260)
-        
         local picker = screenGui:FindFirstChild("EmotePickerPopup")
         if picker then
             picker:Destroy()
@@ -105,12 +105,12 @@ local function createGUI()
 
     local tabs = {}
     local activeTab = nil
-    local tabButtons = {"Tracker", "Emote", "Empty"}
+    local tabButtons = {"Tracker", "Emotes", "Utilities", "Settings"}
 
     for i, name in ipairs(tabButtons) do
         local tabBtn = Instance.new("TextButton")
-        tabBtn.Size = UDim2.new(1/3, -2, 0, 25)
-        tabBtn.Position = UDim2.new((i-1)/3, 1, 0, 0)
+        tabBtn.Size = UDim2.new(1/4, -2, 0, 25)
+        tabBtn.Position = UDim2.new((i-1)/4, 1, 0, 0)
         tabBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
         tabBtn.Text = name
         tabBtn.TextColor3 = Color3.fromRGB(255,255,255)
@@ -133,12 +133,38 @@ local function createGUI()
             end
             contentFrame.Visible = true
             activeTab = name
-
             local picker = screenGui:FindFirstChild("EmotePickerPopup")
             if picker then
                 picker:Destroy()
             end
         end)
+    end
+
+    do
+        local settingsFrame = tabs["Settings"]
+        local credits = Instance.new("TextLabel")
+        credits.Size = UDim2.new(1, 0, 0, 30)
+        credits.Position = UDim2.new(0, 0, 1, -65)
+        credits.BackgroundTransparency = 1
+        credits.Text = "Created by ThawaBR"
+        credits.TextColor3 = Color3.fromRGB(180,180,180)
+        credits.Font = Enum.Font.SourceSansBold
+        credits.TextSize = 18
+        credits.TextYAlignment = Enum.TextYAlignment.Center
+        credits.TextXAlignment = Enum.TextXAlignment.Center
+        credits.Parent = settingsFrame
+
+        local version = Instance.new("TextLabel")
+        version.Size = UDim2.new(1, 0, 0, 20)
+        version.Position = UDim2.new(0, 0, 1, -35)
+        version.BackgroundTransparency = 1
+        version.Text = "V0.4.1"
+        version.TextColor3 = Color3.fromRGB(180,180,180)
+        version.Font = Enum.Font.SourceSans
+        version.TextSize = 14
+        version.TextYAlignment = Enum.TextYAlignment.Center
+        version.TextXAlignment = Enum.TextXAlignment.Center
+        version.Parent = settingsFrame
     end
 
     local function createButton(parent, text, positionY)
@@ -195,10 +221,36 @@ local function createGUI()
         return label
     end
 
+    local function createAura(head)
+        if head:FindFirstChild("ESP_Aura") then 
+            return head:FindFirstChild("ESP_Aura")
+        end
+        
+        local aura = Instance.new("BillboardGui")
+        aura.Name = "ESP_Aura"
+        aura.Adornee = head
+        aura.Size = UDim2.new(0, 80, 0, 80)
+        aura.StudsOffset = Vector3.new(0, 0.5, 0)
+        aura.AlwaysOnTop = true
+        aura.ZIndexBehavior = Enum.ZIndexBehavior.Global
+        aura.Enabled = espEnabled or (followPlayer and followPlayer.Character and followPlayer.Character:FindFirstChild("Head") == head)
+        
+        local circle = Instance.new("ImageLabel")
+        circle.Size = UDim2.new(1, 0, 1, 0)
+        circle.BackgroundTransparency = 1
+        circle.Image = "rbxassetid://266543268"
+        circle.ImageColor3 = Color3.fromRGB(255, 40, 40)
+        circle.ImageTransparency = 0.3
+        circle.Parent = aura
+        aura.Parent = head
+        
+        return aura
+    end
+
     local espFrame = tabs["Tracker"]
-    local toggleButton = createButton(espFrame, "Show: ON", 10)
+    local toggleButton = createButton(espFrame, "ESP: ON", 10)
     local followButton = createButton(espFrame, "Follow Player", 50)
-    local stopFollowButton = createButton(espFrame, "Stop Follow", 120)
+    local stopFollowButton = createButton(espFrame, "Stop Following", 120)
     local nameBox = createTextBox(espFrame, "Player Name", 85)
     local warningLabel = createWarningLabel(espFrame)
 
@@ -210,7 +262,7 @@ local function createGUI()
             billboard.Size = UDim2.new(0,150,0,30)
             billboard.StudsOffset = Vector3.new(0,2,0)
             billboard.AlwaysOnTop = true
-            billboard.Enabled = espEnabled
+            billboard.Enabled = espEnabled or (followPlayer == player)
             billboard.Parent = character.Head
 
             local nameLabel = Instance.new("TextLabel")
@@ -222,16 +274,23 @@ local function createGUI()
             nameLabel.TextSize = 14
             nameLabel.Parent = billboard
         end
+        if character:FindFirstChild("Head") then
+            createAura(character.Head)
+        end
     end
 
     toggleButton.MouseButton1Click:Connect(function()
         espEnabled = not espEnabled
-        toggleButton.Text = "Show: " .. (espEnabled and "ON" or "OFF")
+        toggleButton.Text = "ESP: " .. (espEnabled and "ON" or "OFF")
         for _, player in pairs(Players:GetPlayers()) do
             if player.Character and player.Character:FindFirstChild("Head") then
                 local esp = player.Character.Head:FindFirstChild("NameESP")
                 if esp then
                     esp.Enabled = espEnabled or (followPlayer == player)
+                end
+                local aura = player.Character.Head:FindFirstChild("ESP_Aura")
+                if aura then
+                    aura.Enabled = espEnabled or (followPlayer == player)
                 end
             end
         end
@@ -277,6 +336,10 @@ local function createGUI()
             if esp then
                 esp.Enabled = espEnabled
             end
+            local aura = followPlayer.Character and followPlayer.Character:FindFirstChild("Head") and followPlayer.Character.Head:FindFirstChild("ESP_Aura")
+            if aura then
+                aura.Enabled = espEnabled
+            end
             print("Stopped following "..followPlayer.Name)
             followPlayer = nil
         end
@@ -316,10 +379,46 @@ local function createGUI()
             if esp then
                 esp.Enabled = true
             end
+            local aura = followPlayer.Character.Head:FindFirstChild("ESP_Aura")
+            if aura then
+                aura.Enabled = true
+            end
         end
     end)
 
-    local emoteFrame = tabs["Emote"]
+    local utilities = tabs["Utilities"]
+
+    local function styledBtn(name, posY)
+        local b = Instance.new("TextButton")
+        b.Size = UDim2.new(0.9, 0, 0, 28)
+        b.Position = UDim2.new(0.05, 0, 0, posY)
+        b.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+        b.TextColor3 = Color3.fromRGB(255,255,255)
+        b.Text = name
+        b.Font = Enum.Font.SourceSansBold
+        b.TextSize = 14
+        b.Parent = utilities
+        return b
+    end
+
+    local speedBtn = styledBtn("Speed: OFF", 10)
+    speedBtn.MouseButton1Click:Connect(function()
+        if not localPlayer.Character then return end
+        local hum = localPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if not hum then return end
+        if not walkspeedBoosted then
+            oldWalkSpeed = hum.WalkSpeed
+            hum.WalkSpeed = 40
+            walkspeedBoosted = true
+            speedBtn.Text = "Speed: ON"
+        else
+            hum.WalkSpeed = oldWalkSpeed
+            walkspeedBoosted = false
+            speedBtn.Text = "Speed: OFF"
+        end
+    end)
+
+    local emoteFrame = tabs["Emotes"]
 
     local SyncData = localPlayer:FindFirstChild("SyncData") or Instance.new("RemoteEvent")
     SyncData.Name = "SyncData"
