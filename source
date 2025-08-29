@@ -429,7 +429,8 @@ local function createGUI()
         "Backflip", "Griddy", "BoogieDown", "BreakYou", "Orange", "Chill", "Distraction", "BringItAround",
         "Hakari", "Frolick", "Stars", "Marashin", "Levitate2", "Happy", "Breakdown", "Shhh",
         "Aegis", "Hardstyle", "PizzaRave", "WhatAbout", "BeatReactor", "FaceStomping2", "NothingChanges", "Icon",
-        "Winning", "BoomboxJazz", "KGJ", "Breakdance", "Panessa", "Mikubeam", "AmpUp", "Afro", "Thriller"
+        "Winning", "BoomboxJazz", "KGJ", "Breakdance", "Panessa", "Mikubeam", "AmpUp", "Afro", "Thriller",
+        "Headlock", "BreakBlitz", "DyingTonight", "Adrenaline", "Cat"
     }
     local selectedEmotes = {"", "", "", "", "", "", "", ""}
 
@@ -448,7 +449,7 @@ local function createGUI()
     slotsScrollingFrame.Position = UDim2.new(0, 3, 0, 32)
     slotsScrollingFrame.BackgroundTransparency = 1
     slotsScrollingFrame.BorderSizePixel = 0
-    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 8 * 23)
+    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0) -- Será atualizado dinamicamente
     slotsScrollingFrame.ScrollBarThickness = 7
     slotsScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 120)
     slotsScrollingFrame.Parent = emoteFrame
@@ -568,6 +569,9 @@ local function createGUI()
         end)
         slotButtons[i] = btn
     end
+
+    -- Atualizar o CanvasSize após criar os botões
+    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #slotButtons * 23)
 
     local confirmButton = Instance.new("TextButton")
     confirmButton.Size = UDim2.new(0.96, 0, 0, 28)
