@@ -13,7 +13,6 @@ Track possessed players and access upcoming features in one hub.
 ## Status
 - **Version:** 0.4.1
 - Open Source
-- Major update
 
 ## Developers
 - Creator: ThawaBr
