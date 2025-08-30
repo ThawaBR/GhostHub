@@ -70,6 +70,7 @@ local function createGUI()
     local startPos
     local currentInput
 
+    -- CORREÇÃO DO ARRASTO AQUI
     title.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
@@ -418,6 +419,56 @@ local function createGUI()
         end
     end)
 
+    -- BOTÃO DE TELEPORTE
+    local teleportBtn = styledBtn("Teleport to Player", 50)
+    local teleportBox = createTextBox(utilities, "Player Name", 85)
+    local teleportWarning = createWarningLabel(utilities)
+
+    teleportBtn.MouseButton1Click:Connect(function()
+        teleportBox.Visible = not teleportBox.Visible
+    end)
+
+    teleportBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local text = teleportBox.Text:lower()
+            local matches = {}
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Name:lower():sub(1,#text) == text or player.DisplayName:lower():sub(1,#text) == text then
+                    table.insert(matches, player)
+                end
+            end
+
+            if #matches == 1 then
+                local targetPlayer = matches[1]
+                if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        localPlayer.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
+                        teleportBox.Visible = false
+                        teleportBox.Text = ""
+                        teleportWarning.Text = "Teleported to "..targetPlayer.Name
+                        teleportWarning.Visible = true
+                        delay(2, function() teleportWarning.Visible = false end)
+                    end
+                else
+                    teleportWarning.Text = "Player not found or no character"
+                    teleportWarning.Visible = true
+                    delay(2, function() teleportWarning.Visible = false end)
+                end
+            elseif #matches > 1 then
+                teleportWarning.Text = "Multiple players found:\n"
+                for _, p in pairs(matches) do
+                    teleportWarning.Text = teleportWarning.Text..p.Name.."\n"
+                end
+                teleportWarning.Visible = true
+                delay(2, function() teleportWarning.Visible = false end)
+            else
+                teleportWarning.Text = "No player found."
+                teleportWarning.Visible = true
+                delay(2, function() teleportWarning.Visible = false end)
+            end
+        end
+    end)
+
     local emoteFrame = tabs["Emotes"]
 
     local SyncData = localPlayer:FindFirstChild("SyncData") or Instance.new("RemoteEvent")
@@ -449,7 +500,7 @@ local function createGUI()
     slotsScrollingFrame.Position = UDim2.new(0, 3, 0, 32)
     slotsScrollingFrame.BackgroundTransparency = 1
     slotsScrollingFrame.BorderSizePixel = 0
-    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0) -- Será atualizado dinamicamente
+    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     slotsScrollingFrame.ScrollBarThickness = 7
     slotsScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 120)
     slotsScrollingFrame.Parent = emoteFrame
@@ -570,7 +621,6 @@ local function createGUI()
         slotButtons[i] = btn
     end
 
-    -- Atualizar o CanvasSize após criar os botões
     slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #slotButtons * 23)
 
     local confirmButton = Instance.new("TextButton")
