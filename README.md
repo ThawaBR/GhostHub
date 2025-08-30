@@ -1,6 +1,10 @@
 # Ghost Hub
 
 Track possessed players and access upcoming features in one hub.
+## 📥 Como usar
+
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs/heads/main/source"))()
 
 ## Features
 - Tracker: Shows possessed players and allows following.
