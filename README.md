@@ -23,10 +23,6 @@ Any usage of this script requires giving proper credits to the creator.
 
 ⚠️ Use this script at your own risk.
 
-# Ghost Hub
-
-# Ghost Hub
-
 ## 📥 Como usar
 
 Copy and paste this code into your executor:
