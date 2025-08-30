@@ -23,7 +23,7 @@ Any usage of this script requires giving proper credits to the creator.
 
 ⚠️ Use this script at your own risk.
 
-## 📥 Como usar
+## 📥 How to use
 
 Copy and paste this code into your executor:
 
