@@ -418,6 +418,18 @@ local function createGUI()
         end
     end)
 
+    local respawnBtn = styledBtn("Respawn", 50)
+    respawnBtn.MouseButton1Click:Connect(function()
+        if localPlayer.Character then
+            local humanoid = localPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.Health = 0
+            end
+        end
+        wait(0.5)
+        localPlayer:LoadCharacter()
+    end)
+
     local emoteFrame = tabs["Emotes"]
 
     local SyncData = localPlayer:FindFirstChild("SyncData") or Instance.new("RemoteEvent")
@@ -449,7 +461,7 @@ local function createGUI()
     slotsScrollingFrame.Position = UDim2.new(0, 3, 0, 32)
     slotsScrollingFrame.BackgroundTransparency = 1
     slotsScrollingFrame.BorderSizePixel = 0
-    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0) -- Será atualizado dinamicamente
+    slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     slotsScrollingFrame.ScrollBarThickness = 7
     slotsScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 100, 120)
     slotsScrollingFrame.Parent = emoteFrame
@@ -570,7 +582,6 @@ local function createGUI()
         slotButtons[i] = btn
     end
 
-    -- Atualizar o CanvasSize após criar os botões
     slotsScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #slotButtons * 23)
 
     local confirmButton = Instance.new("TextButton")
