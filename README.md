@@ -24,7 +24,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Chat Log.
 
 ## Status
-- **Version:** 0.5.0
+- **Version:** 0.5.1
 
 ## Developers
 - Creator: ThawaBr
