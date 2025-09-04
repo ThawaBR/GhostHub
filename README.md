@@ -20,6 +20,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Noclip toggle.
   - Infinite Vision button.
   - Anti Mute button.
+  - Anti Blind button.
 
 ## Status
 - **Version:** 0.5.0
