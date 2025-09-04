@@ -15,12 +15,12 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 - Emotes: 46+ animations available: Panessa, Stars, Fanclub, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Utilities:
-  - Speed boost toggle for faster movement.
-  - Respawn button.
-  - Noclip toggle.
-  - Infinite Vision button.
-  - Anti Mute button.
-  - Anti Blind button.
+  - Speed.
+  - Respawn.
+  - Noclip.
+  - Infinite Vision.
+  - Anti Mute.
+  - Anti Blind.
 
 ## Status
 - **Version:** 0.5.0
