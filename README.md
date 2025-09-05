@@ -23,8 +23,8 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Anti Blind.
   - Chat Log.
 - Settings:
-  - Anti Kick
-  - Anti Afk
+  - Anti Kick.
+  - Anti Afk.
 
 ## Status
 - **Version:** 0.5.1
