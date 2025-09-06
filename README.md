@@ -22,6 +22,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Anti Mute.
   - Anti Blind.
   - Chat Log.
+  - Safe Zone.
 - Settings:
   - Anti Kick.
   - Anti Afk.
