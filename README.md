@@ -12,7 +12,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 ## Features
 
 - Tracker: Shows possessed players and allows following.
-- Emotes: 46+ animations available: Panessa, Stars, Fanclub, and many more.
+- Emotes: 47+ animations available: Panessa, Stars, Fanclub, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Utilities:
   - Speed.
