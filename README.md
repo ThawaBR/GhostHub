@@ -14,6 +14,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 - Tracker: Shows possessed players and allows following.
 - Emotes: 47+ animations available: Panessa, Stars, Fanclub, and many more.
 - Roulette: Allows you to pick any item from the roulette.
+- Chest:
+  - Auto Buy Spin.
+  - Auto Spin.
 - Utilities:
   - Speed.
   - Respawn.
