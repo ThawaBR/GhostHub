@@ -25,13 +25,14 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Anti Mute.
   - Anti Blind.
   - Chat Log.
+  - Redeem Codes.
   - Safe Zone.
 - Settings:
   - Anti Kick.
   - Anti Afk.
 
 ## Status
-- **Version:** 0.6.2
+- **Version:** 0.6.3
 
 ## Developers
 - Creator: ThawaBr
