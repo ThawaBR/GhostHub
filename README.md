@@ -23,7 +23,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Noclip.
   - Infinite Vision.
   - Anti Mute.
-  - Anti Blind.
   - Chat Log.
   - Redeem Codes.
   - Safe Zone.
