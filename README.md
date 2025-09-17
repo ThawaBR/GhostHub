@@ -26,6 +26,8 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Chat Log.
   - Redeem Codes.
   - Safe Zone.
+- Troll:
+  - M
 - Settings:
   - Anti Kick.
   - Anti Afk.
