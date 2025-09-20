@@ -34,7 +34,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Anti Afk.
 
 ## Status
-- **Version:** 0.6.4
+- **Version:** 0.6.5
 
 ## Developers
 - Creator: ThawaBr
