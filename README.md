@@ -29,8 +29,8 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Redeem Codes.
   - Safe Zone.
 - Troll:
-  - Mirror Player
-  - Pizza Sound Spam
+  - Mirror Player.
+  - Pizza Sound Spam.
 - Settings:
   - Anti Kick.
   - Anti Afk.
