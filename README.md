@@ -11,7 +11,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 ```
 ## Features
 
-- Tracker: Shows possessed players and allows following.
 - Emotes: 47+ animations available: Panessa, Stars, Fanclub, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Shop:
@@ -28,6 +27,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Chat Log.
   - Redeem Codes.
   - Safe Zone.
+  - Possessor Detect.
 - Troll:
   - Mirror Player.
   - Pizza Sound Spam.
@@ -36,7 +36,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Anti Afk.
 
 ## Status
-- **Version:** 0.6.5
+- **Version:** 0.6.6
 
 ## Developers
 - Creator: ThawaBr
