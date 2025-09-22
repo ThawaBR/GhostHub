@@ -11,7 +11,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 ```
 ## Features
 
-- Utilities:
+- Player:
   - Speed.
   - Respawn.
   - Noclip.
