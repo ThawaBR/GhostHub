@@ -11,13 +11,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 ```
 ## Features
 
-- Emotes: 47+ animations available: Panessa, Stars, Fanclub, and many more.
-- Roulette: Allows you to pick any item from the roulette.
-- Shop:
-  - Auto Buy Spin.
-  - Auto Spin.
-  - Jade Contemplation.
-  - Jade Shatter.
 - Utilities:
   - Speed.
   - Respawn.
@@ -28,6 +21,13 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Redeem Codes.
   - Safe Zone.
   - Possessor Detect.
+- Emotes: 47+ animations available: Panessa, Stars, Fanclub, and many more.
+- Roulette: Allows you to pick any item from the roulette.
+- Shop:
+  - Auto Buy Spin.
+  - Auto Spin.
+  - Jade Contemplation.
+  - Jade Shatter.
 - Troll:
   - Mirror Player.
   - Pizza Sound Spam.
