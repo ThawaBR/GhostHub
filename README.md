@@ -20,7 +20,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Redeem Codes.
   - Safe Zone.
   - Possessor Detect.
-- Emotes: 47+ animations available: Panessa, Stars, Fanclub, and many more.
+- Emotes: 47+ animations available: Levitate, Thriller, RhythmRiot, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Shop:
   - Auto Buy Spin.
