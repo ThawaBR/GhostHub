@@ -15,7 +15,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Speed.
   - Respawn.
   - Noclip.
-  - Infinite Vision.
   - Anti Mute.
   - Chat Log.
   - Redeem Codes.
