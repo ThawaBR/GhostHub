@@ -21,6 +21,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Safe Zone.
   - Possessor Detect.
 - Ritual:
+Automatic mission completion system coming soon!
 - Emotes: 47+ animations available: Levitate, Thriller, RhythmRiot, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Shop:
