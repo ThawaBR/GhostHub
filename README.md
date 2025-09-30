@@ -20,7 +20,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Redeem Codes.
   - Safe Zone.
   - Possessor Detect.
-  - Weed FX.
 - Emotes: 47+ animations available: Levitate, Thriller, RhythmRiot, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Shop:
@@ -31,12 +30,13 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 - Troll:
   - Mirror Player.
   - Pizza Sound Spam.
+  - Weed FX.
 - Settings:
   - Anti Kick.
   - Anti Afk.
 
 ## Status
-- **Version:** 0.7.0
+- **Version:** 0.6.7
 
 ## Developers
 - Creator: ThawaBr
