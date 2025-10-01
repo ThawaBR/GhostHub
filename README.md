@@ -33,6 +33,7 @@ Automatic mission completion system coming soon!
   - Mirror Player.
   - Pizza Sound Spam.
   - Weed FX.
+  - Knockback.
 - Settings:
   - Anti Kick.
   - Anti Afk.
