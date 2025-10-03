@@ -20,8 +20,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Redeem Codes.
   - Safe Zone.
   - Possessor Detect.
-- Ritual:
-Automatic mission completion system coming soon!
 - Emotes: 56+ animations available: Levitate, Thriller, RhythmRiot, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Shop:
@@ -32,14 +30,13 @@ Automatic mission completion system coming soon!
 - Troll:
   - Mirror Player.
   - Pizza Sound Spam.
-  - Weed FX.
   - Knockback.
 - Settings:
   - Anti Kick.
   - Anti Afk.
 
 ## Status
-- **Version:** 0.6.7
+- **Version:** 0.6.8
 
 ## Developers
 - Creator: ThawaBr
