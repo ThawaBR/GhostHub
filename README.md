@@ -34,6 +34,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 - Settings:
   - Anti Kick.
   - Anti Afk.
+  - Rejoin.
 
 ## Status
 - **Version:** 0.6.8
