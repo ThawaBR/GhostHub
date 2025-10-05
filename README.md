@@ -28,7 +28,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Jade Contemplation.
   - Jade Shatter.
 - Troll:
-  - Mirror Player.
+  - Backshots.
   - Pizza Sound Spam.
   - Knockback.
 - Settings:
