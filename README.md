@@ -31,13 +31,18 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Backshots.
   - Pizza Sound Spam.
   - Knockback.
+- Server Info:
+  - Online Players.
+  - Place ID.
+  - Job ID.
+  - Player List.
 - Settings:
   - Anti Kick.
   - Anti Afk.
   - Rejoin.
 
 ## Status
-- **Version:** 0.6.8
+- **Version:** 0.6.9
 
 ## Developers
 - Creator: ThawaBr
