@@ -30,7 +30,6 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
 - Troll:
   - Backshots.
   - Pizza Sound Spam.
-  - Knockback.
 - Server Info:
   - Ping.
   - Online Players.
