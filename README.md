@@ -41,7 +41,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Rejoin.
 
 ## Status
-- Version: 0.6.9
+- Version: 0.7.0
 
 ## Developers
 - Creator: ThawaBr
