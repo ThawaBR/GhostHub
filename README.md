@@ -18,9 +18,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Anti Mute.
   - Chat Log.
   - Redeem Codes.
+  - Players Items.
   - Safe Zone.
   - Possessor Detect.
-  - Player Items.
 - Emotes: 56+ animations available: Levitate, Thriller, RhythmRiot, and many more.
 - Roulette: Allows you to pick any item from the roulette.
 - Shop:
