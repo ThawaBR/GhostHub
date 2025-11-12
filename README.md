@@ -10,7 +10,6 @@ Copy and paste this code into your executor:
 loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs/heads/main/source"))()
 ```
 ## Features
-
 - Player:
   - Speed.
   - Respawn.
