@@ -39,9 +39,10 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/ThawaBR/GhostHub/refs
   - Anti Kick.
   - Anti Afk.
   - Rejoin.
+  - ServerHop.
 
 ## Status
-- Version: 0.7.1
+- Version: 1.7.2
 
 ## Developers
 - Creator: ThawaBr
